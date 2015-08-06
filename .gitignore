@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+/build/
+=======
 /build
 /bin
 .classpath
 .project
 /.settings
+>>>>>>> branch 'master' of https://github.com/jjysservlet/healthRegimenForJJ.git
