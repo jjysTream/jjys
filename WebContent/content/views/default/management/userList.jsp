@@ -34,7 +34,12 @@
 			<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
-					<a href="management/regist">账户列表<span class="badge navbar-right">添加&nbsp;+</span></a>
+					账户列表
+					<c:if test="${person.department.departmentID == 1 || person.department.level == 4 }">
+					<a href="management/regist"><span class="badge navbar-right">
+					添加&nbsp;+
+					</span></a>
+					</c:if>
 				</h3>
 			</div>
 			<div class="list-group-item">
@@ -73,10 +78,15 @@
 							权限不够
 						</c:if>
 						</td> 
-						<td><a onclick="popupWindow('management/rechargeForUser?id=${cdc.membersUserID }');" href="javascript:void(0);"><span class="badge">交易记录</span></a></td>
 						<td>
+							<a onclick="popupWindow('management/rechargeForUser?id=${cdc.membersUserID }');" href="javascript:void(0);"><span class="badge">交易记录</span></a>
+						</td>
+						<td>
+						<c:if test="${person.department.departmentID == 1 || person.department.level == 4 }">
 							<a onclick="" href="management/updateUser?id=${cdc.membersUserID }"><span class="badge">修改</span></a>
-							<a onclick="" href="management/deleteUser?id=${cdc.membersUserID }"><span class="badge">删除</span></a></td>
+							<a onclick="" href="management/deleteUser?id=${cdc.membersUserID }"><span class="badge">删除</span></a>
+						</c:if>
+						</td>
 						</tr>
 					</c:forEach>
 				</table>

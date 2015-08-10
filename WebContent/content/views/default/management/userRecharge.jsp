@@ -73,8 +73,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td>${recharge.endDate }</td>
 						<td>
 							<c:if test="${loop.index == 0 }">
+							<c:if test="${person.department.departmentID == 1 || person.department.level == 4 }">
 							<a onclick="" href="management/xufei?id=${recharge.membersUser.membersUserID }"><span class="badge">续费</span></a>
 							<a onclick="" href="management/deletexufei?id=${recharge.recordID }"><span class="badge">删除</span></a>
+							</c:if>
 							</c:if>
 							</td>
 						</tr>

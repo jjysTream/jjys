@@ -145,9 +145,9 @@
 												<c:if test="${personnel.isView != false}">电话隐藏</c:if>
 											</button> 
 											
+										<a href="personnel/deleteUser?id=${personnel.personnelID }">
+										<button class="btn btn-default" >删除</button></a>
 										</c:if>
-										<a href="personnel/deleteUser?id=${personnel.personnelID }"></a>
-										<button class="btn btn-default" >删除</button>
 									</td>
 								</c:forEach>
 							</tbody>
