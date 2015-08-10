@@ -1,3 +1,4 @@
+<%@page import="com.yc.entity.user.Personnel"%>
 <%@ page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -8,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>员工</title>
+<title>机构管理员</title>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -48,7 +49,6 @@
 <body>
 	<!-- Static navbar -->
 	<jsp:include page='../common/header.jsp' />
-
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<jsp:include page='../common/menu.jsp' />
@@ -59,8 +59,7 @@
 						<div class="col-sm-2">
 							<select name="department_id" id="department_id"
 								class="form-control" onchange="depChange(this);">
-								<option value="0">选择部门
-									<%-- <option value="${departmentlist.departmentID }">${departmentlist.departmentname } --%>
+								<option value="0">选择机构
 									<c:forEach var="department" items="${departmentlist }">
 										<option value="${department.departmentID }">${department.departmentName }
 									</c:forEach>
@@ -74,7 +73,7 @@
 							</select>
 						</div>
 						<div class="col-sm-2">
-							<button type="submit" class="btn btn-default navbar-right">查询</button>
+							<button type="submit" class="btn btn-default ">查询</button>
 						</div>
 					</div>
 				</form>
@@ -88,10 +87,13 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<h3 class="panel-title">
-							员工列表 <a href="personnel/addPersonnel?mathed=add"> <span
+							机构管理员列表 <a href="personnel/addPersonnel?mathed=add"> <span
 								class="badge navbar-right" id="add"><font size="3px;">添加&nbsp;&nbsp;+</font></span></a>
 						</h3>
 					</div>
+					<c:set var="person"
+	value='<%=(Personnel) request.getSession().getAttribute(
+						"loginPersonnle")%>'></c:set>
 					<div class="list-group-item">
 						<p class="list-group-item-text">
 						<table class="table table-striped">
@@ -121,19 +123,29 @@
 									<td><c:if test="${personnel.sex == 'Female'}">女</c:if> <c:if
 											test="${personnel.sex == 'Male'}">男</c:if></td>
 									<td>${personnel.department.departmentName}</td>
-									<td>${personnel.phone}</td>
+									<td>
+										${personnel.phone}
+									</td>
 									<td>${personnel.email}</td>
 									<td><c:if test="${personnel.forbidden == false}">正常使用</c:if>
 										<c:if test="${personnel.forbidden != false}">已经禁用</c:if></td>
 									<td>
 
 										<button class="btn btn-default"
-											onclick="popupwindow('management/addPersonnel?id=${personnel.personnelID}&mathed=update');">修改</button>
-										<button type="button" class="btn btn-default"
-											onclick="forbiddenPersonnelById('${personnel.personnelID}');">
-											<c:if test="${personnel.forbidden == false}">禁用</c:if>
-											<c:if test="${personnel.forbidden != false}">恢复</c:if>
-										</button> 
+											onclick="updatePerson('personnel/addPersonnel?id=${personnel.personnelID}&mathed=update');">修改</button>
+										<c:if test="${person.department.departmentID == 1 && personnel.department.departmentID != 1 }">
+											<button type="button" class="btn btn-default"
+												onclick="forbiddenPersonnelById('${personnel.personnelID}');">
+												<c:if test="${personnel.forbidden == false}">禁用</c:if>
+												<c:if test="${personnel.forbidden != false}">恢复</c:if>
+											</button> 
+											<button type="button" class="btn btn-default"
+												onclick="forbiddenPersonnelById('${personnel.personnelID}');">
+												<c:if test="${personnel.isView == false}">电话可见</c:if>
+												<c:if test="${personnel.isView != false}">电话隐藏</c:if>
+											</button> 
+											
+										</c:if>
 										<a href="personnel/deleteUser?id=${personnel.personnelID }"></a>
 										<button class="btn btn-default" >删除</button>
 									</td>
@@ -147,13 +159,15 @@
 	</div>
 	<script type="text/javascript">
 		function forbiddenPersonnelById(obj) {
-			location.href = "management/forbiddenPersonnel?id=" + obj;
+			location.href = "personnel/forbiddenPersonnel?id=" + obj;
 		}
 
+		function updatePerson(url){
+			location.href = url;
+		}
 		function addMember(obj) {
-			document.form.action = "management/addPersonnel?mathed=" + obj;
+			document.form.action = "personnel/addPersonnel?mathed=" + obj;
 			document.form.submit();
-			return closeAndRefresh();
 		}
 
 		function depChange(obj) {

@@ -103,31 +103,34 @@ public class PersonnelController {
 	}
 
 	@RequestMapping(value = "addPersonnelList", method = RequestMethod.POST)
-	public String addPersonnelList(Integer id,String loginName, String password, String sex, String userName,Integer position_id, 
+	public String addPersonnelList(Integer id,String loginName, String password, String sexs, String userName,Integer position_id, 
 			Integer department_id,String phone, String email, String mathed,String page,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		Sex sex1 = null;
-		if (sex != null)
-		{
-			if (sex.equals("female"))
-				sex1 = Sex.Female;
-			else if ( sex.equals("male") )
-				sex1 = Sex.Male;
-		}
-		
 		if (mathed.equals("add")) {
 			if (page.equals("personnel")) {
 				Department department = departmentService.findById(department_id);
-				Personnel personnel = new Personnel();
-				personnel.setLoginName(loginName);
-				personnel.setPassword(password);
-				personnel.setUserName(userName);
-				personnel.setSex(sex1);
-				personnel.setPhone(phone);
-				personnel.setEmail(email);
-				personnel.setDepartment(department);
-				personnelService.save(personnel);
+				if(department != null){
+					Personnel personnel = new Personnel();
+					personnel.setLoginName(loginName);
+					personnel.setPassword(password);
+					personnel.setUserName(userName);
+					personnel.setSex(Sex.valueOf(sexs));
+					personnel.setPhone(phone);
+					personnel.setEmail(email);
+					personnel.setIsView(false);
+					personnel.setForbidden(false);
+					personnel.setDepartment(department);
+					personnel =personnelService.save(personnel);
+					List<Personnel> list = department.getPersonnels();
+					if(list == null){
+						list = new ArrayList<Personnel>();
+					}
+					System.out.println("list========="+list.size());
+					list.add(personnel);
+					System.out.println("list========="+list.size());
+					department.setPersonnels(list);
+					departmentService.update(department);
+				}
 			}
 		}else{
 			Department department = departmentService.findById(department_id);
@@ -135,9 +138,16 @@ public class PersonnelController {
 			personnel.setPhone(phone);
 			personnel.setEmail(email);
 			personnel.setDepartment(department);
-			personnelService.update(personnel);	
+			personnel = personnelService.update(personnel);	
+			List<Personnel> list = department.getPersonnels();
+			if(list == null){
+				list = new ArrayList<Personnel>();
+			}
+			list.add(personnel);
+			department.setPersonnels(list);
+			departmentService.update(department);
 		}
-		return "redirect:/management/personnel";
+		return "redirect:/personnel/personnel";
 	}
 
     @RequestMapping(value = "logout", method = RequestMethod.GET)
@@ -151,7 +161,7 @@ public class PersonnelController {
     	request.getSession().getAttribute("loginPersonnle");
     	ModelMap mode = new ModelMap();
     	mode.put("personel", request.getSession().getAttribute("loginPersonnle"));
-    	return new ModelAndView("Personnle/addPersonnle",mode);
+    	return new ModelAndView("personnel/addPersonnle",mode);
     }
     @RequestMapping(value = "personnel", method = RequestMethod.GET)
 	public ModelAndView getAllPersonnel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -167,20 +177,16 @@ public class PersonnelController {
 			}
 			departmentList.add(department);
 		}
-		for (Department departments : departmentList) {
-			personnelList.addAll(departments.getPersonnels());
+		if(departmentList != null){
+			for (Department departments : departmentList) {
+				List<Personnel> pessonnels = personnelService.getAllByDepartmentID(departments.getDepartmentID());
+				personnelList.addAll(pessonnels);
+			}
 		}
 		mode.put("departmentlist", departmentList);
 		mode.put("personnellist", personnelList);
 
 		return new ModelAndView("personnel/personnel", mode);
-	}
-    @RequestMapping(value = "userList", method = RequestMethod.GET)
-	public ModelAndView userList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Personnel> list = personnelService.getAll();
-		ModelMap mode = new ModelMap();
-		mode.put("list", list);
-		return new ModelAndView("personnel/userList", mode);
 	}
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.GET)
@@ -192,19 +198,37 @@ public class PersonnelController {
 	}
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
-	public String updateUsers(Personnel personnel, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public String updateUsers(Personnel personnel,Integer department_id, String sexs, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Personnel user = personnelService.getPersonnle(personnel.getLoginName());
 		if (user != null) {
+			Department department = departmentService.findById(department_id);
+			Sex sex = Sex.valueOf(sexs);
 			personnel.setForbidden(user.getForbidden());
+			personnel.setDepartment(department);
+			personnel.setSex(sex);
 			BeanUtils.copyProperties(personnel, user);
+			user.setDepartment(department);
+			user.setSex(sex);
 			personnelService.update(user);
 		}
-		return "redirect:/personnel/userList";
+		return "redirect:/personnel/personnel";
 	}
 
 	@RequestMapping(value = "deleteUser", method = RequestMethod.GET)
 	public String deleteUser(Integer id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		personnelService.delete(id);
-		return "redirect:/personnel/userList";
+		return "redirect:/personnel/personnel";
 	}
+	
+	@RequestMapping(value = "forbiddenPersonnel", method = RequestMethod.GET)
+	public String forbiddenPersonnel(Integer id,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Personnel personnel = personnelService.findById(id);
+		if( personnel.getForbidden() != null )
+		{
+			personnel.setForbidden(!personnel.getForbidden());;
+			personnelService.update(personnel);
+		}
+		return "redirect:/personnel/personnel";
+	}
+	
 }

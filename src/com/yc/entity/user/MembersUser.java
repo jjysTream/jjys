@@ -10,9 +10,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.yc.entity.Collection;
+import com.yc.entity.RechargeRecord;
 
 @Entity
 @DiscriminatorValue("membersUser")
@@ -59,7 +62,7 @@ public class MembersUser {
 	
 	@Column
 	private String phone;
-
+	
 	@Column
 	@Enumerated(EnumType.STRING)
 	private ConstitutionType bodyConstitution;// 体质
@@ -69,6 +72,17 @@ public class MembersUser {
 	
 	@OneToMany(mappedBy = "user")
 	private List<Collection> collections ;
+
+	@OneToMany(mappedBy = "membersUser")
+	private List<RechargeRecord> rechargeRecords; //充值记录
+	
+	public List<RechargeRecord> getRechargeRecords() {
+		return rechargeRecords;
+	}
+
+	public void setRechargeRecords(List<RechargeRecord> rechargeRecords) {
+		this.rechargeRecords = rechargeRecords;
+	}
 
 	public String getPhone() {
 		return phone;
