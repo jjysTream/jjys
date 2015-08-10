@@ -3,6 +3,7 @@ package com.yc.controller.user;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,8 @@ public class PersonnelController {
    
     @Autowired
     IDepartmentService departmentService;
+    
+    List<Department> departments = null;
     
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -166,27 +169,43 @@ public class PersonnelController {
     @RequestMapping(value = "personnel", method = RequestMethod.GET)
 	public ModelAndView getAllPersonnel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ModelMap mode = new ModelMap();
+		departments = new ArrayList<Department>();
 		List<Personnel> personnelList = new ArrayList<Personnel>();
 		Personnel personnel = (Personnel)request.getSession().getAttribute("loginPersonnle");
 		Department department = personnel.getDepartment();
 		Set<Department> departmentList = null;
 		if(department != null){
+			getDepartmentList(department);
 			departmentList = department.getChildren();
 			if(departmentList == null){
 				departmentList = new HashSet<Department>();
 			}
 			departmentList.add(department);
 		}
-		if(departmentList != null){
-			for (Department departments : departmentList) {
-				List<Personnel> pessonnels = personnelService.getAllByDepartmentID(departments.getDepartmentID());
+		if(departments != null){
+			for (Department depar : departments) {
+				List<Personnel> pessonnels = personnelService.getAllByDepartmentID(depar.getDepartmentID());
 				personnelList.addAll(pessonnels);
 			}
 		}
 		mode.put("departmentlist", departmentList);
 		mode.put("personnellist", personnelList);
-
 		return new ModelAndView("personnel/personnel", mode);
+	}
+
+	private void getDepartmentList(Department department) {
+		Set<Department> departmentList =  department.getChildren();
+		if (departmentList != null && departmentList.size()>0) {
+			Iterator<Department> iterator = departmentList.iterator();
+			while (iterator.hasNext()) {
+				Department dep = iterator.next();
+				if(dep != null){
+					getDepartmentList(dep);
+				}
+				departments.add(dep);
+			}
+		}
+		departments.add(department);
 	}
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.GET)
