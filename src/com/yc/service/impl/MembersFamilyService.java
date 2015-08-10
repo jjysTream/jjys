@@ -1,5 +1,7 @@
 package com.yc.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,4 +19,9 @@ public class MembersFamilyService extends GenericService<MembersFamily> implemen
 		return membersFamilyDao;
 	}
 
+	@Override
+	public List<MembersFamily> getFamiliesByLoginName(String loginName) {
+		return membersFamilyDao.getBy("membersUser.loginName", loginName);
+	}
+	
 }

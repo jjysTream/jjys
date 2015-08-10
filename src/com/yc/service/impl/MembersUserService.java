@@ -19,8 +19,8 @@ public class MembersUserService extends GenericService<MembersUser> implements I
 	}
 
 	@Override
-	public MembersUser getUser(String mobile) {
-		return userDao.getFirstRecord("loginName", mobile);
+	public MembersUser getUser(String loginName) {
+		return userDao.getFirstRecord("loginName", loginName);
 	}
 
 	@Override
