@@ -1,0 +1,203 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*棉花*/
+.mianhua{ width:1200px; height:850px;  margin:0px auto;}
+.mianhua .top1{ width:100%; height:50px;}
+.mianhua .top1 .p1{ font-size:20px; line-height:50px; color:#F69; }
+.mianhua .nei{ width:100%; height:50px; margin-top:20px; border-bottom:1px #ccc solid; width:80%;} 
+.mianhua .nei .p1{ font-size:18px; line-height:50px; margin:0px 20px;}
+.mianhua .nei .p3{ margin:0px 10px;   padding:5px 20px;}
+.mianhua .left{ width:200px; height:80px; margin-top:20px; margin-left:20px;}
+
+.mianhua .left p{ line-height:30px; margin-left:20px; font-size:14px;}
+.mianhua .nav{ width:100%; height:50px; background-color:#E2F1F9; margin-top:20px;border-bottom:2px #ccc solid; }
+.mianhua .nav ul li{ display:inline-block; float:left; font-size:14px; font-weight:600; line-height:50px;width:100px; margin-left:5px; text-align:center;}
+.mianhua .nav1{ width:100%; height:50px; border-bottom:1px #ccc solid;}
+
+.nav1:hover{ background-color:#ededed;}
+.mianhua .nav1 ul li{ display:inline-block; float:left; font-size:14px;  line-height:50px;width:100px; margin-left:5px; text-align:center; }
+#pageMain{height:400px;  width:100%; overflow:hidden;  }
+#pageMain2{height:400px;  width:100%; overflow:hidden;  }
+#pageBox {
+	 float:right; margin:20px 20px 0px 0px; 
+}
+#pageBox span {
+	display: inline-block;
+	width: 60px;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	color: #fff;
+	background: #08a586;
+}
+#pageNav {
+	display: inline-block;
+}
+#pageNav a {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	color: #08a586;
+	text-decoration: none;
+}
+#pageNav a.active, #pageNav a:hover {
+	background: #08a586;
+	color: #fff;
+}
+#pageBox2 {
+	 float:right; margin:20px 20px 0px 0px;
+}
+#pageBox2 span {
+	display: inline-block;
+	width: 60px;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	color: #fff;
+	background: #08a586;
+}
+#pageNav2 {
+	display: inline-block;
+}
+#pageNav2 a {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	color: #08a586;
+	text-decoration: none;
+}
+#pageNav2 a.active, #pageNav2 a:hover {
+	background: #08a586;
+	color: #fff;
+}
+
+/*关于我们*/
+.about{ width:1000px; height:auto;  margin:20px auto; overflow:hidden;}
+.about .box1{ width:1000px; height:auto; margin:20px auto; border-bottom:1px #ccc solid; padding-bottom:30px;}
+.about .box1 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.about .box1 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+
+.about .left{ width:150px; height:300px; float:left;}
+.about .left ul li{ font-size:20px; border-bottom:2px #ccc solid; text-align:center;  line-height:50px; height:50px;}
+.about>.right{ width:800px; height:auto; border:1px #ccc solid; float:right;}
+
+.about .box2{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.about .box2>span{ font-size:30px; margin-left:20px; line-height:70px;}
+.about .box2 .right{ width:400px; height:auto; margin-left:150px;}
+.about .box2 .right ul li{ width:400px; height:35px; color:#5F6467; }
+.about .box2 .right ul li span{ color:#E74240; font-size:20px; font-weight:700; float:left;}
+.about .box2 .right ul li p{ float:left; font-size:14px; margin-right:40px; margin-top:5px;}
+.about .box2 .right>p{ font-size:14px; color:#5F6467; line-height:34px;}
+
+.about .box3{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.about .box3 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.about .box3 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+
+.about .box4{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.about .box4 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.about .box4 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+
+.about .box5{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.about .box5 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.about .box5 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+/*物流平台*/
+.wuliu{ width:1000px; height:auto;  margin:20px auto; overflow:hidden;}
+.wuliu .left{ width:150px; height:300px; float:left;}
+.wuliu .left ul li{ font-size:20px; border-bottom:2px #ccc solid; text-align:center;  line-height:50px; height:50px;}
+.wuliu>.right{ width:800px; height:auto; border:1px #ccc solid; float:right;}
+
+.wuliu .right .box2{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.wuliu .right .box2>span{ font-size:30px; margin-left:20px; line-height:70px;}
+
+
+.wuliu .box2 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+.wuliu .right .box2 img{ margin-top:20px; margin-left:100px;}
+.wuliu .left .kuang{ width:150px; height:150px; border:1px #E8403E solid; box-shadow:1px 1px 3px #E8403E; margin-top:20px; position:fixed; padding:0px 10px; text-align:center;}
+.wuliu .left .kuang p{ line-height:40px;}
+
+.wuliu .box3{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.wuliu .box3 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.wuliu .box3 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+.wuliu .box3 img{ margin-left:100px; margin-top:20px;} 
+
+.wuliu .box4{ width:800px; height:auto; margin:20px auto; padding-bottom:30px;}
+.wuliu .box4 span{ font-size:30px; margin-left:20px; line-height:70px;}
+.wuliu .box4 p{ text-indent:2em; line-height:34px; padding:0px 100px; font-size:16px; margin-top:10px;}
+.wuliu .box4 img{ margin-left:100px; margin-top:20px;} 
+
+
+
+
+
+
+
+
+
+
+
+
+/*登陆*/
+.login{ width:1000px; height:500px; border:1px #CCC solid; margin:100px auto; padding:10px;}
+.login .left{ float:left; width:500px; height:500px; margin-left:20px;}
+
+.login .box{ float:right; width:400px; height:400px; margin-top:50px; border-left:1px #ccc solid;}
+.login .box h2{ margin:10px 0px 0px 40%;}
+.login .box input{ margin-left:30px; margin-top:25px; width:180px; height:25px;}
+.login .box form{ margin-left:50px; margin-top:10px;}
+.login .box .button{ width:250px; height:30px; border:none; margin-top:15px; margin-left:30px; font-size:16px; color:#fff; background-color:#EC314E; border-radius:3px; line-height:30px; letter-spacing:10px; text-align:center;}
+.login .box  a{ font-size:14px; margin-left:10px; margin-right:10px; line-height:50px;}
+.login .box .radio{ clear:both; width:10px; height:10px; margin-top:35px;}
+/*新手指南*/
+.zhi{ width:1200px; height:auto; border:1px #ccc solid; margin:20px auto;}
+.zhi h1{ margin:20px 0px 0px 20px;}
+.zhi .box1{ width:100%; height:420px; background-color:#fafafa;}
+.zhi .box1 .left{ float:left; width:200px; height:auto; margin-top:20px;}
+.zhi .box1 .left img{ margin:20px 0px 0px 20px;}
+.zhi .box1 .left p{ margin-top:20px; margin-left:20px;}
+.zhi .box1 .right{ float:right; width:900px;margin-top:20px; margin-right:50px;}
+.zhi .box1 .right img{  width:800px; margin-bottom:10px;}
+
+.zhi .box2{ width:100%; height:220px; background-color:#ededed;}
+.zhi .box2 .left{ float:left; width:200px; height:auto; margin-top:20px;}
+.zhi .box2 .left img{ margin:20px 0px 0px 20px;}
+.zhi .box2 .left p{ margin-top:20px; margin-left:20px;}
+.zhi .box2 .right{ float:right; width:900px;margin-top:20px; margin-right:50px;}
+.zhi .box2 .right img{  width:100px; margin-bottom:10px; margin-left:20px; margin-right:50px;}
+
+.zhi .box3{ width:100%; height:240px; background-color:#fafafa;}
+.zhi .box3 .left{ float:left; width:200px; height:auto; margin-top:20px;}
+.zhi .box3 .left img{ margin:20px 0px 0px 20px;}
+.zhi .box3 .left p{ margin-top:20px; margin-left:20px;}
+.zhi .box3 .right{ float:right; width:900px;margin-top:20px; margin-right:50px;}
+.zhi .box3 .right img{  margin-bottom:10px; margin-left:20px; margin-right:50px;height:200px;}
+ 
+.zhi .box4{ width:100%; height:240px; background-color:#ededed;}
+.zhi .box4 .left{ float:left; width:200px; height:auto; margin-top:20px;}
+.zhi .box4 .left img{ margin:20px 0px 0px 20px;}
+.zhi .box4 .left p{ margin-top:20px; margin-left:20px;}
+.zhi .box4 .right{ float:right; width:900px;margin-top:20px; margin-right:50px;}
+.zhi .box4 .right img{  margin-bottom:10px; margin-left:20px; margin-right:50px;height:200px;}
+/*联系我们*/
+.lianxi{ width:1200px; height:auto; border:1px #ccc solid; margin:20px auto;}
+.lianxi h1{ margin:20px 0px 0px 20px;}
+.lianxi .tel{ width:100%; height:70px;border-bottom:1px #ccc solid;}
+.lianxi .tel img{ margin:20px 0px 0px 100px; float:left;}
+.lianxi .tel p{ float:left; font-size:40px; margin-left:30px; margin-top:10px;}
+.lianxi .dizhi{ width:100%; height:470px;margin-top:100px;}
+.lianxi .dizhi img{ margin:20px 0px 0px 100px; float:left;}
+.lianxi .dizhi p{ float:left; font-size:24px; margin-left:30px; margin-top:20px;}
+.lianxi .dizhi .tu{ clear:both; width:400px; margin-top:30px; margin-left:250px;}
+/*网站地图*/
+.ditu{ width:1000px; height:800px; border:1px #ccc solid; margin:20px auto;}
+.ditu h1{ margin:20px 0px 0px 20px;}
+.ditu .center{ width:100%; height:600px; }
+.ditu .center img{ float:left; margin-left:50px; margin-top:40px;} 
+.ditu .center .right{ float:right; width:500px; height:600px; border-radius:10px; border:1px #ccc solid; box-shadow:1px 1px 3px #ccc,inset 1px 1px 3px #ccc; margin-right:50px; overflow:hidden; margin-top:40px;}
+.ditu .center .right .d1{ width:100%; height:25px; background-color:#ededed; padding-left:20px; line-height:25px; }
+.ditu .center .right .d2{ width:100%; height:auto; margin-top:10px; border-bottom:1px #ccc solid;padding-bottom:10px; line-height:30px;}
+.ditu .center .right .d2 a{ color:#E83F3D; margin-left:20px;} 
