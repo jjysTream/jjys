@@ -73,33 +73,33 @@ public class UserController {
 	}
 	
 	//用户是否收藏了商品或者店铺
-	@RequestMapping(value = "detail/isCollected", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> isCollected(String userName, Integer recommID, Integer shopID )
-			throws ServletException, IOException {
-		ModelMap mode = new ModelMap();
-		MembersUser user = userService.getUser(userName);
-		List<Collection> collections = collectionService.getAllByUser(user.getMembersUserID());
-		int i;
-		for ( i = 0; i < collections.size(); i++ ) {
-			if ( recommID != 0 && collections.get(i).getRecommendation() != null ) {
-				if ( collections.get(i).getRecommendation().getRecommendationID() == recommID ) {
-					mode.put("isCollected", true);
-					break;
-				}
-			} 
+		@RequestMapping(value = "detail/isCollected", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> isCollected(String userName, Integer recommID, Integer shopID )
+				throws ServletException, IOException {
+			ModelMap mode = new ModelMap();
+			MembersUser user = userService.getUser(userName);
+			List<Collection> collections = collectionService.getAllByUser(user.getMembersUserID());
+			int i;
+			for ( i = 0; i < collections.size(); i++ ) {
+				if ( recommID != 0 && collections.get(i).getRecommendation() != null ) {
+					if ( collections.get(i).getRecommendation().getRecommendationID() == recommID ) {
+						mode.put("isCollected", true);
+						break;
+					}
+				} 
 //				else if ( shopID != 0 && collections.get(i).getShop() != null ) {
 //					if ( collections.get(i).getShop().getId() == shopID ) {
 //						mode.put("isCollected", true);
 //						break;
 //					}
 //				}
+			}
+			if ( i >= collections.size() ) {
+				mode.put("isCollected", false);
+			}
+			return mode;
 		}
-		if ( i >= collections.size() ) {
-			mode.put("isCollected", false);
-		}
-		return mode;
-	}
 			
 	// 所有收藏
 	@RequestMapping(value = "collection", method = RequestMethod.GET)

@@ -23,5 +23,4 @@ public class MembersFamilyService extends GenericService<MembersFamily> implemen
 	public List<MembersFamily> getFamiliesByLoginName(String loginName) {
 		return membersFamilyDao.getBy("membersUser.loginName", loginName);
 	}
-	
 }
