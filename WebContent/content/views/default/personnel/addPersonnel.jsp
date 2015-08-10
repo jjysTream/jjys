@@ -56,55 +56,50 @@
 				<div class="col-sm-offset-1 col-sm-10" style="text-align: center;"><font color="green" style="font-size: 28px;">机构管理员注册</font></div>
 				</div>
 					<div class="form-group">
+						<c:if test="${mathed == 'update'}">
+							<label for="inputEmail3" class="col-sm-2 control-label">填写登录名</label>
+							<div class="col-sm-8">
+								<input id="loginName" class="form-control" name="loginName" readonly="readonly" value="${personnel.loginName}">
+							</div>
+						</c:if>
 						<c:if test="${mathed == 'add'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">填写登录名</label>
-							<input type="hidden" name="id" value="${id }">
 							<div class="col-sm-8">
-								<input id="loginName" class="form-control" name="loginName">${personnel.loginName}
+								<input id="loginName" class="form-control" name="loginName">
 							</div>
 						</c:if>
 					</div>
 					<div class="form-group">
-						<c:if test="${mathed == 'add'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">填写密码</label>
-							<input type="hidden" name="id" value="${id }">
 							<div class="col-sm-8">
-								<input id="password" class="form-control" name="password">${personnel.password}
+								<input id="password" class="form-control" name="password" value="${personnel.password}">
 							</div>
-						</c:if>
 					</div>
 
 					<div class="form-group">
-						<c:if test="${mathed == 'add'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">填写用户名</label>
-							<input type="hidden" name="id" value="${id }">
 							<div class="col-sm-8">
-								<input id="userName" class="form-control" name="userName">${personnel.userName}
+								<input id="userName" class="form-control" name="userName" value="${personnel.userName}">
 							</div>
-						</c:if>
 					</div>
 
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-2 control-label">性别</label>
 						<div class="col-sm-8">
-							<c:if test="${mathed == 'add'}">
-								<select name="sex" id="sex" class="form-control">
-									<option value="null">选择性别
-									<option value="female">女</option>
-									<option value="male">男</option>
+								<select name="sexs" id="sex" class="form-control">
+									<option value="Male" <c:if test="${personnel.sex == 'Male' }">selected</c:if>>男</option>
+									<option value="Female" <c:if test="${personnel.sex == 'Female' }">selected</c:if>>女</option>
 								</select>
-							</c:if>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<c:if test="${mathed == 'update'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">修改电话</label>
-							<input type="hidden" name="id" value="${personnel.id }">
+							<input type="hidden" name="personnelID" value="${personnel.personnelID }">
 						</c:if>
 						<c:if test="${mathed == 'add'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">填写电话</label>
-							<input type="hidden" name="id" value="${id }">
 						</c:if>
 						<div class="col-sm-8">
 							<input id="phone" class="form-control" name="phone"
@@ -115,11 +110,9 @@
 					<div class="form-group">
 						<c:if test="${mathed == 'update'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">修改邮件</label>
-							<input type="hidden" name="id" value="${personnel.id }">
 						</c:if>
 						<c:if test="${mathed == 'add'}">
 							<label for="inputEmail3" class="col-sm-2 control-label">填写邮件</label>
-							<input type="hidden" name="id" value="${id }">
 						</c:if>
 						<div class="col-sm-8">
 							<input id="email" class="form-control" name="email"
@@ -128,13 +121,13 @@
 					</div>
 
 					<div class="form-group">
-						<label for="inputEmail3" class="col-sm-2 control-label">部门</label>
+						<label for="inputEmail3" class="col-sm-2 control-label">机构</label>
 						<div class="col-sm-8">
 							<select name="department_id" id="department_id"
 								class="form-control" onchange="depChange(this);">
-								<option value="0">选择部门
+								<option value="0">选择机构
 									<c:forEach var="department" items="${departmentlist }">
-										<option value="${department.departmentID }">${department.departmentName }</option>
+										<option value="${department.departmentID }" <c:if test="${personnel.department.departmentID == department.departmentID }">selected</c:if>>${department.departmentName }</option>
 									</c:forEach>
 							</select>
 						</div>
@@ -146,6 +139,10 @@
 								onclick="addPersonnel('${mathed}');">
 								<c:if test="${mathed == 'add'}">加入员工</c:if>
 								<c:if test="${mathed == 'update'}">修改员工</c:if>
+							</button>
+							<button type="button" class="btn btn-default"
+								onclick="fanhui();">
+								返回
 							</button>
 						</div>
 					</div>
@@ -160,9 +157,18 @@
 		}
 
 		function addPersonnel(obj) {
-			document.form.action = "management/addPersonnelList?page=${page}&mathed="
-					+ obj;
-			document.form.submit();
+			if(obj == 'update'){
+				document.form.action = "personnel/updateUser";
+				document.form.submit();
+			}else{
+ 			document.form.action = "personnel/addPersonnelList?page=${page}&mathed="
+ 					+ obj;
+ 			document.form.submit();
+				
+			}
+		}
+		function fanhui(){
+			location.href = 'personnel/personnel';
 		}
 		function closeAndRefresh() {
 			window.onunload = refreshParent;

@@ -33,10 +33,13 @@ public class Personnel {
 	
 	@Column
 	@Enumerated(EnumType.STRING)
-	private Sex sex;
+	private Sex sex = Sex.Male;
 
 	@Column
 	private String phone;
+	
+	@Column
+	private Boolean isView = false;
 	
 	@ManyToOne
 	@JoinColumn(name = "department_id")
@@ -45,6 +48,14 @@ public class Personnel {
 	@Column
 	private Boolean forbidden = true;//是否禁用
 	
+	public Boolean getIsView() {
+		return isView;
+	}
+
+	public void setIsView(Boolean isView) {
+		this.isView = isView;
+	}
+
 	public void setForbidden(Boolean forbidden) {
 		this.forbidden = forbidden;
 	}

@@ -71,111 +71,34 @@ public class UserController {
 		}
 	}
 	
-	@RequestMapping(value = "addMember", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public void addMember(String loginName, String memberName, String memberConstitution,
-			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		MembersUser user = userService.getUser(loginName);
-		MembersFamily member = new MembersFamily();
-		member.setMembersFamilyID(null);
-		if ( "平和质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.FlatAndQuality);
-		} else if ( "气虚质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.QiDeficiency);
-		} else if ( "阳虚质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.YangXuzhi);
-		} else if ( "阴虚质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.YinDeficiency);
-		} else if ( "痰湿质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.PhlegmDampnessQuality);
-		} else if ( "湿热质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.HotAndhumidQuality);
-		} else if ( "血瘀质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.BloodStasis);
-		} else if ( "气虚质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.QiStagnation);
-		} else if ( "特禀质".equals(memberConstitution)) {
-			member.setBodyConstitution(ConstitutionType.IntrinsicQuality);
-		}
-		member.setMembersUser(user);
-	}
-	
-	@RequestMapping(value = "getMembers", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public Map<String, Object> getMembers(String loginName,HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
-		MembersUser user = userService.getUser(loginName);
-		List<MembersFamily> members = user.getFamilies();
-		
-		List<MemberFamilyModel> memberModels = new ArrayList<MemberFamilyModel>();
-		MemberFamilyModel member = new MemberFamilyModel();
-		for ( int i = 0; i < members.size(); i++ ) {
-			ConstitutionType memberConstitution = members.get(i).getBodyConstitution();
-			if ( "平和质".equals(memberConstitution)) {
-				member.setConstitution("平和质");
-			} else if ( "气虚质".equals(memberConstitution)) {
-				member.setConstitution("气虚质");
-			} else if ( "阳虚质".equals(memberConstitution)) {
-				member.setConstitution("阳虚质");
-			} else if ( "阴虚质".equals(memberConstitution)) {
-				member.setConstitution("阴虚质");
-			} else if ( "痰湿质".equals(memberConstitution)) {
-				member.setConstitution("痰湿质");
-			} else if ( "湿热质".equals(memberConstitution)) {
-				member.setConstitution("湿热质");
-			} else if ( "血瘀质".equals(memberConstitution)) {
-				member.setConstitution("血瘀质");
-			} else if ( "气虚质".equals(memberConstitution)) {
-				member.setConstitution("气虚质");
-			} else if ( "特禀质".equals(memberConstitution)) {
-				member.setConstitution("特禀质");
-			}
-			member.setMembersFamilyId(members.get(i).getMembersFamilyID());
-			member.setMembersName(members.get(i).getMembersName());
-			memberModels.add(member);
-		}
-		
-		ModelMap mode = new ModelMap();
-		mode.put("members", memberModels);
-		return mode;
-	}
-	
-	@RequestMapping(value = "deleteMember", method = { RequestMethod.POST, RequestMethod.GET })
-	@ResponseBody
-	public void deleteMember(Integer memberId,HttpServletRequest request, 
-			HttpServletResponse response) throws ServletException, IOException {
-		memberService.delete(memberId);
-	}
-	
 	//用户是否收藏了商品或者店铺
-	@RequestMapping(value = "detail/isCollected", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> isCollected(String userName, Integer recommID, Integer shopID )
-			throws ServletException, IOException {
-		ModelMap mode = new ModelMap();
-		MembersUser user = userService.getUser(userName);
-		List<Collection> collections = collectionService.getAllByUser(user.getMembersUserID());
-		int i;
-		for ( i = 0; i < collections.size(); i++ ) {
-			if ( recommID != 0 && collections.get(i).getRecommendation() != null ) {
-				if ( collections.get(i).getRecommendation().getRecommendationID() == recommID ) {
-					mode.put("isCollected", true);
-					break;
-				}
-			} 
+		@RequestMapping(value = "detail/isCollected", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> isCollected(String userName, Integer recommID, Integer shopID )
+				throws ServletException, IOException {
+			ModelMap mode = new ModelMap();
+			MembersUser user = userService.getUser(userName);
+			List<Collection> collections = collectionService.getAllByUser(user.getMembersUserID());
+			int i;
+			for ( i = 0; i < collections.size(); i++ ) {
+				if ( recommID != 0 && collections.get(i).getRecommendation() != null ) {
+					if ( collections.get(i).getRecommendation().getRecommendationID() == recommID ) {
+						mode.put("isCollected", true);
+						break;
+					}
+				} 
 //				else if ( shopID != 0 && collections.get(i).getShop() != null ) {
 //					if ( collections.get(i).getShop().getId() == shopID ) {
 //						mode.put("isCollected", true);
 //						break;
 //					}
 //				}
+			}
+			if ( i >= collections.size() ) {
+				mode.put("isCollected", false);
+			}
+			return mode;
 		}
-		if ( i >= collections.size() ) {
-			mode.put("isCollected", false);
-		}
-		return mode;
-	}
 			
 	// 所有收藏
 	@RequestMapping(value = "collection", method = RequestMethod.GET)
@@ -196,53 +119,129 @@ public class UserController {
 	}
 	
 	// MD5加码。32位
-	public static String MD5(String inStr) {
-		MessageDigest md5 = null;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-		} catch (Exception e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-			return "";
+		public static String MD5(String inStr) {
+			MessageDigest md5 = null;
+			try {
+				md5 = MessageDigest.getInstance("MD5");
+			} catch (Exception e) {
+				System.out.println(e.toString());
+				e.printStackTrace();
+				return "";
+			}
+			char[] charArray = inStr.toCharArray();
+			byte[] byteArray = new byte[charArray.length];
+
+			for (int i = 0; i < charArray.length; i++)
+				byteArray[i] = (byte) charArray[i];
+
+			byte[] md5Bytes = md5.digest(byteArray);
+
+			StringBuffer hexValue = new StringBuffer();
+
+			for (int i = 0; i < md5Bytes.length; i++) {
+				int val = ((int) md5Bytes[i]) & 0xff;
+				if (val < 16)
+					hexValue.append("0");
+				hexValue.append(Integer.toHexString(val));
+			}
+
+			return hexValue.toString();
 		}
-		char[] charArray = inStr.toCharArray();
-		byte[] byteArray = new byte[charArray.length];
 
-		for (int i = 0; i < charArray.length; i++)
-			byteArray[i] = (byte) charArray[i];
-
-		byte[] md5Bytes = md5.digest(byteArray);
-
-		StringBuffer hexValue = new StringBuffer();
-
-		for (int i = 0; i < md5Bytes.length; i++) {
-			int val = ((int) md5Bytes[i]) & 0xff;
-			if (val < 16)
-				hexValue.append("0");
-			hexValue.append(Integer.toHexString(val));
+		// 可逆的加密算法
+		public static String KL(String inStr) {
+			// String s = new String(inStr);
+			char[] a = inStr.toCharArray();
+			for (int i = 0; i < a.length; i++) {
+				a[i] = (char) (a[i] ^ 't');
+			}
+			String s = new String(a);
+			return s;
 		}
 
-		return hexValue.toString();
-	}
-
-	// 可逆的加密算法
-	public static String KL(String inStr) {
-		// String s = new String(inStr);
-		char[] a = inStr.toCharArray();
-		for (int i = 0; i < a.length; i++) {
-			a[i] = (char) (a[i] ^ 't');
+		// 加密后解密
+		public static String JM(String inStr) {
+			char[] a = inStr.toCharArray();
+			for (int i = 0; i < a.length; i++) {
+				a[i] = (char) (a[i] ^ 't');
+			}
+			String k = new String(a);
+			return k;
 		}
-		String s = new String(a);
-		return s;
-	}
-
-	// 加密后解密
-	public static String JM(String inStr) {
-		char[] a = inStr.toCharArray();
-		for (int i = 0; i < a.length; i++) {
-			a[i] = (char) (a[i] ^ 't');
+		@RequestMapping(value = "addMember", method = { RequestMethod.POST, RequestMethod.GET })
+		@ResponseBody
+		public void addMember(String loginName, String memberName, String memberConstitution,
+				HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			
+			MembersUser user = userService.getUser(loginName);
+			MembersFamily member = new MembersFamily();
+			member.setMembersFamilyID(null);
+			if ( "平和质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.FlatAndQuality);
+			} else if ( "气虚质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.QiDeficiency);
+			} else if ( "阳虚质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.YangXuzhi);
+			} else if ( "阴虚质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.YinDeficiency);
+			} else if ( "痰湿质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.PhlegmDampnessQuality);
+			} else if ( "湿热质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.HotAndhumidQuality);
+			} else if ( "血瘀质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.BloodStasis);
+			} else if ( "气虚质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.QiStagnation);
+			} else if ( "特禀质".equals(memberConstitution)) {
+				member.setBodyConstitution(ConstitutionType.IntrinsicQuality);
+			}
+			member.setMembersUser(user);
 		}
-		String k = new String(a);
-		return k;
-	}
+		
+		@RequestMapping(value = "getMembers", method = { RequestMethod.POST, RequestMethod.GET })
+		@ResponseBody
+		public Map<String, Object> getMembers(String loginName,HttpServletRequest request, 
+				HttpServletResponse response) throws ServletException, IOException {
+			MembersUser user = userService.getUser(loginName);
+			List<MembersFamily> members = user.getFamilies();
+			
+			List<MemberFamilyModel> memberModels = new ArrayList<MemberFamilyModel>();
+			MemberFamilyModel member = new MemberFamilyModel();
+			for ( int i = 0; i < members.size(); i++ ) {
+				ConstitutionType memberConstitution = members.get(i).getBodyConstitution();
+				if ( "平和质".equals(memberConstitution)) {
+					member.setConstitution("平和质");
+				} else if ( "气虚质".equals(memberConstitution)) {
+					member.setConstitution("气虚质");
+				} else if ( "阳虚质".equals(memberConstitution)) {
+					member.setConstitution("阳虚质");
+				} else if ( "阴虚质".equals(memberConstitution)) {
+					member.setConstitution("阴虚质");
+				} else if ( "痰湿质".equals(memberConstitution)) {
+					member.setConstitution("痰湿质");
+				} else if ( "湿热质".equals(memberConstitution)) {
+					member.setConstitution("湿热质");
+				} else if ( "血瘀质".equals(memberConstitution)) {
+					member.setConstitution("血瘀质");
+				} else if ( "气虚质".equals(memberConstitution)) {
+					member.setConstitution("气虚质");
+				} else if ( "特禀质".equals(memberConstitution)) {
+					member.setConstitution("特禀质");
+				}
+				member.setMembersFamilyId(members.get(i).getMembersFamilyID());
+				member.setMembersName(members.get(i).getMembersName());
+				memberModels.add(member);
+			}
+			
+			ModelMap mode = new ModelMap();
+			mode.put("members", memberModels);
+			return mode;
+		}
+		
+		@RequestMapping(value = "deleteMember", method = { RequestMethod.POST, RequestMethod.GET })
+		@ResponseBody
+		public void deleteMember(Integer memberId,HttpServletRequest request, 
+				HttpServletResponse response) throws ServletException, IOException {
+			memberService.delete(memberId);
+		}
 }

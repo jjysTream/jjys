@@ -34,6 +34,6 @@ public interface IPersonnelService  extends IGenericService<Personnel>{
 	 * @param depAndPosID 第三方表ID
 	 * @return
 	 */
-	List<Personnel> getAllByDepAndPos(Integer depAndPosID);
+	List<Personnel> getAllByDepartmentID(Integer depAndPosID);
 
 }

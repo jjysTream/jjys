@@ -73,7 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</div>
 							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label"><a
-									class="frred">*</a>用户名</label>
+									class="frred">*</a>身份证</label>
 								<div class="col-sm-10">
 									<input type="text" name="loginName" class="form-control"
 										id="inputEmail3" onblur="checkformname()"> <span

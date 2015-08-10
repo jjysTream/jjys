@@ -3,6 +3,7 @@ package com.yc.dao.orm.commons;
 import org.springframework.context.annotation.*;
 
 import com.yc.entity.Collection;
+import com.yc.entity.RechargeRecord;
 import com.yc.entity.Recommendation;
 import com.yc.entity.RecommendationTypes;
 import com.yc.entity.user.Department;
@@ -40,5 +41,9 @@ public class GenericDaoConfig {
 	@Bean
 	public GenericDao<RecommendationTypes> getRecommendationTypesDao() {
 		return new GenericDaoSupport<RecommendationTypes>(RecommendationTypes.class);
+	}
+	@Bean
+	public GenericDao<RechargeRecord> getRechargeRecordDao() {
+		return new GenericDaoSupport<RechargeRecord>(RechargeRecord.class);
 	}
 }

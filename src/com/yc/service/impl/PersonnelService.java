@@ -39,14 +39,10 @@ public class PersonnelService extends GenericService<Personnel> implements IPers
 
 	@Override
 	public List<Personnel> getAllByParametersForManage(Map<String, Object> map) {
-		StringBuffer hql = new StringBuffer(" from Personnel u where (? is null or u.departAndPositions.department.departmentID = ?) and (? is null or u.userName like ?) and (? is null or u.departAndPositions.positions.positionID = ?)");
-		Object[] paramete =  new Object[6];
+		StringBuffer hql = new StringBuffer(" from Personnel u where (? is null or u.department.departmentID = ?)");
+		Object[] paramete =  new Object[2];
 		paramete[0] = map.get("departmentID") ;
 		paramete[1] = map.get("departmentID");
-		paramete[2] = map.get("userName") ;
-		paramete[3] = "%"+map.get("userName") +"%";
-		paramete[4] = map.get("positionid") ;
-		paramete[5] = map.get("positionid");
 
 		List<Personnel> list = personnelDao.find(hql.toString(), paramete, -1,-1);
 		
@@ -77,8 +73,8 @@ public class PersonnelService extends GenericService<Personnel> implements IPers
 	}
 
 	@Override
-	public List<Personnel> getAllByDepAndPos(Integer depAndPosID) {
-		return personnelDao.getBy("departAndPositions.id", depAndPosID);
+	public List<Personnel> getAllByDepartmentID(Integer depAndPosID) {
+		return personnelDao.getBy("department.departmentID", depAndPosID);
 	}
 
 }
