@@ -170,6 +170,7 @@ public class PersonnelController {
 	public ModelAndView getAllPersonnel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ModelMap mode = new ModelMap();
 		departments = new ArrayList<Department>();
+		departments.clear();
 		List<Personnel> personnelList = new ArrayList<Personnel>();
 		Personnel personnel = (Personnel)request.getSession().getAttribute("loginPersonnle");
 		Department department = personnel.getDepartment();
@@ -182,7 +183,7 @@ public class PersonnelController {
 			}
 			departmentList.add(department);
 		}
-		if(departments != null){
+		if(departments != null && departments.size()>0){
 			for (Department depar : departments) {
 				List<Personnel> pessonnels = personnelService.getAllByDepartmentID(depar.getDepartmentID());
 				personnelList.addAll(pessonnels);
@@ -199,13 +200,18 @@ public class PersonnelController {
 			Iterator<Department> iterator = departmentList.iterator();
 			while (iterator.hasNext()) {
 				Department dep = iterator.next();
-				if(dep != null){
+				if(dep != null && dep.getChildren() != null){
 					getDepartmentList(dep);
 				}
-				departments.add(dep);
+				System.out.println("jiangbo dep =========="+dep.getDepartmentName());
+//				if(!departments.contains(dep)){
+//					departments.add(dep);
+//				}
 			}
 		}
-		departments.add(department);
+//		if (!departments.contains(department)) {
+//			departments.add(department);
+//		}
 	}
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.GET)

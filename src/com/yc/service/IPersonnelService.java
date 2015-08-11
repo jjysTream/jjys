@@ -30,8 +30,8 @@ public interface IPersonnelService  extends IGenericService<Personnel>{
 	List<Personnel> getAllByParametersForManage(Map<String, Object> map);
 
 	/***
-	 * 通过部门职位第三方表ID查询员工
-	 * @param depAndPosID 第三方表ID
+	 * 通过部门ID查询员工
+	 * @param depAndPosID 部门机构ID
 	 * @return
 	 */
 	List<Personnel> getAllByDepartmentID(Integer depAndPosID);

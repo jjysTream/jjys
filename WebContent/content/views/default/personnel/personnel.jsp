@@ -130,9 +130,10 @@
 									<td><c:if test="${personnel.forbidden == false}">正常使用</c:if>
 										<c:if test="${personnel.forbidden != false}">已经禁用</c:if></td>
 									<td>
-
+										<c:if test="${personnel.personnelID == person.personnelID || person.department.level < personnel.department.level }">
 										<button class="btn btn-default"
 											onclick="updatePerson('personnel/addPersonnel?id=${personnel.personnelID}&mathed=update');">修改</button>
+										</c:if>
 										<c:if test="${person.department.departmentID == 1 && personnel.department.departmentID != 1 }">
 											<button type="button" class="btn btn-default"
 												onclick="forbiddenPersonnelById('${personnel.personnelID}');">

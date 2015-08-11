@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yc.entity.RechargeRecord;
+import com.yc.entity.user.Department;
 import com.yc.entity.user.MembersUser;
 import com.yc.entity.user.Personnel;
 import com.yc.service.IMembersUserService;
+import com.yc.service.IPersonnelService;
 import com.yc.service.IRechargeRecordService;
 
 @Controller
@@ -37,6 +41,11 @@ public class ManagementUserController {
 	@Autowired
 	IRechargeRecordService rechargeRecordService;
 	
+	@Autowired
+	IPersonnelService personnelService;
+	
+	List<Department> departments = null;
+	
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		return new ModelAndView("management/index");
@@ -44,12 +53,48 @@ public class ManagementUserController {
 	
 	@RequestMapping(value = "userList", method = RequestMethod.GET)
 	public ModelAndView userList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<MembersUser> list = userService.getAll();
+		Personnel personnel = (Personnel)request.getSession().getAttribute("loginPersonnle");
 		ModelMap mode = new ModelMap();
-		mode.put("list", list);
+		if(personnel != null){
+			Department department = personnel.getDepartment();
+			departments = new ArrayList<Department>();
+			departments.clear();
+			getDepartmentList(department);
+			List<MembersUser> personnelList = new ArrayList<MembersUser>();
+			if (departments != null && departments.size()>0) {
+				for (Department depar : departments) {
+					if (depar != null && depar.getLevel()==4) {
+						List<MembersUser> userList = userService.getAllByDepartments(depar.getDepartmentID());
+						if(userList != null){
+							personnelList.addAll(userList);
+						}
+					}
+				}
+			}
+			mode.put("list", personnelList);
+		}
 		return new ModelAndView("management/userList", mode);
 	}
 
+	private void getDepartmentList(Department department) {
+		Set<Department> departmentList =  department.getChildren();
+		if (departmentList != null && departmentList.size()>0) {
+			Iterator<Department> iterator = departmentList.iterator();
+			while (iterator.hasNext()) {
+				Department dep = iterator.next();
+				if(dep != null && dep.getChildren() != null){
+					getDepartmentList(dep);
+				}
+				if(dep.getLevel() == 4 && !departments.contains(dep)){
+					departments.add(dep);
+				}
+			}
+		}
+		if (department.getLevel() == 4 && !departments.contains(department)) {
+			departments.add(department);
+		}
+	}
+	
 	@RequestMapping(value = "updateUser", method = RequestMethod.GET)
 	public ModelAndView updateUser(Integer id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		MembersUser user = userService.findById(id);

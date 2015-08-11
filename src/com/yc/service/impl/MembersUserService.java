@@ -1,5 +1,7 @@
 package com.yc.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +28,12 @@ public class MembersUserService extends GenericService<MembersUser> implements I
 	@Override
 	public MembersUser getUserByEmail(String email) {
 		return userDao.getFirstRecord("email", email);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MembersUser> getAllByDepartments(Integer departmentID) {
+		StringBuffer hql = new StringBuffer("SELECT DISTINCT mu.* FROM membersuser mu LEFT JOIN rechargerecord rg ON rg.membersUser_id = mu.membersUserID WHERE rg.creatDepartment_id = "+departmentID);
+		return userDao.getEntityManager().createNativeQuery(hql.toString(), MembersUser.class).getResultList();
 	}
 }
