@@ -316,7 +316,12 @@ public class ManagementUserController {
     }
     @RequestMapping(value = "retrieval", method = RequestMethod.POST)
     public ModelAndView retrieval(String level,String paymentDateLeft,String paymentDateRight,HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	ModelMap mode = new ModelMap();
+    	ModelMap mode = retvievalMath(level, paymentDateLeft, paymentDateRight, request);
+    	return new ModelAndView("management/retrieval",mode);
+    }
+
+	private ModelMap retvievalMath(String level, String paymentDateLeft, String paymentDateRight, HttpServletRequest request) throws ParseException {
+		ModelMap mode = new ModelMap();
     	mode.put("level", level);
     	mode.put("paymentDateLeft", paymentDateLeft);
     	mode.put("paymentDateRight", paymentDateRight);
@@ -355,6 +360,15 @@ public class ManagementUserController {
 			}
 			mode.put("list", personnelList);
 		}
+		return mode;
+	}
+    
+    @RequestMapping(value = "isSettle", method = RequestMethod.GET)
+   	public ModelAndView isSettle(Integer recordID,String level,String paymentDateLeft,String paymentDateRight, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	RechargeRecord record =recordService.findById(recordID);
+    	record.setIsSettle(!record.getIsSettle());
+    	recordService.update(record);
+    	ModelMap mode = retvievalMath(level, paymentDateLeft, paymentDateRight, request);
     	return new ModelAndView("management/retrieval",mode);
     }
     

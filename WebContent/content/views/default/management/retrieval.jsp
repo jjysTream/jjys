@@ -34,6 +34,9 @@
 			formatDate : 'Y-m-d',
 		});
 	}
+	function isSettle(id){
+		window.location.href = 'management/isSettle?recordID='+id+'&level='+$('#level').val()+'&paymentDateLeft='+$('#paymentDateLeft').val()+'&paymentDateRight='+$('#paymentDateRight').val();
+	}
 </script>
 <div class="row clearfix">
 	<jsp:include page='../common/menu.jsp' />
@@ -45,7 +48,7 @@
 					action="management/retrieval" method="POST">
 					<div class="form-group">
 						<div class="col-sm-2">
-							<select name="level"  class="form-control" >
+							<select name="level" id="level" class="form-control" >
 								<option value="-1">-----会员等级-----
 								<option value="senior" <c:if test="${level == 'senior' }">checked</c:if>>高级
 								<option value="common" <c:if test="${level == 'common' }">checked</c:if>>普通
@@ -126,7 +129,7 @@
 						<td>${cdc.cateDepartment.parentLevel.parentLevel.departmentName }</td>
 						<td>${cdc.cateDepartment.parentLevel.parentLevel.parentLevel.departmentName }</td>
 						<td>
-						<button><c:if test="${!cdc.isSettle }">未结算</c:if><c:if test="${cdc.isSettle }">已结算</c:if></button>
+						<button onclick="isSettle('cdc.recordID');"  class="btn "><c:if test="${!cdc.isSettle }">未结算</c:if><c:if test="${cdc.isSettle }">已结算</c:if></button>
 						</td>
 						</tr>
 					</c:forEach>
