@@ -123,6 +123,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									</div>
 							</div>
 							<div class="form-group">
+									<label for="inputPhone" class="col-sm-2 control-label">是否高级</label>
+									<div class="col-sm-10">
+										<input type="radio" id="inputSex" name="MemberLevel" value="common" class="audio" <c:if test="${user.MemberLevel == 'common' }">checked</c:if>>普通&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"
+											id="inputSex" name="MemberLevel" value="Female" class="audio" <c:if test="${user.MemberLevel == 'Female' }">checked</c:if>>高级
+									</div>
+							</div>
+							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10"
 									style="text-align: center;">
 									<button type="submit" class="btn btn-default"

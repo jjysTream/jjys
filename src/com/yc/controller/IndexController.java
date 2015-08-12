@@ -19,7 +19,7 @@ public class IndexController {
 	public String index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		return "redirect:/management/index";
 	}
-	
+	 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		return new ModelAndView("management/login", null);

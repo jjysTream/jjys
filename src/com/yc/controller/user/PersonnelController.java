@@ -195,23 +195,22 @@ public class PersonnelController {
 	}
 
 	private void getDepartmentList(Department department) {
-		Set<Department> departmentList =  department.getChildren();
+		if (!departments.contains(department)) {
+			departments.add(department);
+		}
+		List<Department> departmentList = departmentService.getDepartmentByParentID(department.getDepartmentID());
 		if (departmentList != null && departmentList.size()>0) {
-			Iterator<Department> iterator = departmentList.iterator();
-			while (iterator.hasNext()) {
-				Department dep = iterator.next();
-				if(dep != null && dep.getChildren() != null){
+			for (Department dep : departmentList) {
+				System.out.println("jiangbo dep =========="+dep.getDepartmentName());
+				if(dep != null ){
+					System.out.println("jiangbo dep 1=========="+dep.getDepartmentName());
 					getDepartmentList(dep);
 				}
-				System.out.println("jiangbo dep =========="+dep.getDepartmentName());
-//				if(!departments.contains(dep)){
-//					departments.add(dep);
-//				}
+				if(!departments.contains(dep)){
+					departments.add(dep);
+				}
 			}
 		}
-//		if (!departments.contains(department)) {
-//			departments.add(department);
-//		}
 	}
 
 	@RequestMapping(value = "updateUser", method = RequestMethod.GET)

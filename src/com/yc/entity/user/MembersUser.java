@@ -47,8 +47,12 @@ public class MembersUser {
 
 	@Column
 	@Enumerated(EnumType.STRING)
-	private Sex sex;
+	private Sex sex = Sex.Male;
 
+	@Column
+	@Enumerated(EnumType.STRING)
+	private MemberLevel level = MemberLevel.common;
+	
 	@Column
 	private String birthday;
 
@@ -74,6 +78,14 @@ public class MembersUser {
 	@OneToMany(mappedBy = "membersUser")
 	private List<RechargeRecord> rechargeRecords; //充值记录
 	
+	public MemberLevel getLevel() {
+		return level;
+	}
+
+	public void setLevel(MemberLevel level) {
+		this.level = level;
+	}
+
 	public List<RechargeRecord> getRechargeRecords() {
 		return rechargeRecords;
 	}

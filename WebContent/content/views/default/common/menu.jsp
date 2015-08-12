@@ -15,6 +15,9 @@
 					<a href="management/userList">会员用户</a>
 				</div>
 				<div class="panel-body" style="text-align: center;">
+					<a href="management/retrieval">会员检索</a>
+				</div>
+				<div class="panel-body" style="text-align: center;">
 					<a href="personnel/personnel">管理账户</a>
 				</div>
 			</div>

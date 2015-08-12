@@ -7,26 +7,37 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yc.entity.RechargeRecord;
 import com.yc.entity.user.Department;
 import com.yc.entity.user.MembersUser;
 import com.yc.entity.user.Personnel;
+import com.yc.entity.user.Sex;
+import com.yc.model.MemberRecord;
+import com.yc.service.IDepartmentService;
 import com.yc.service.IMembersUserService;
 import com.yc.service.IPersonnelService;
 import com.yc.service.IRechargeRecordService;
@@ -34,6 +45,9 @@ import com.yc.service.IRechargeRecordService;
 @Controller
 @RequestMapping("/management")
 public class ManagementUserController {
+	
+	@SuppressWarnings("unused")
+	private static final Logger LOG = Logger.getLogger(ManagementUserController.class);
 	
 	@Autowired
 	IMembersUserService userService;
@@ -43,6 +57,12 @@ public class ManagementUserController {
 	
 	@Autowired
 	IPersonnelService personnelService;
+	
+	@Autowired
+	IDepartmentService departmentService;
+	
+	@Autowired
+	IRechargeRecordService recordService;
 	
 	List<Department> departments = null;
 	
@@ -77,11 +97,12 @@ public class ManagementUserController {
 	}
 
 	private void getDepartmentList(Department department) {
-		Set<Department> departmentList =  department.getChildren();
+		if (department.getLevel() == 4 && !departments.contains(department)) {
+			departments.add(department);
+		}
+		List<Department> departmentList = departmentService.getDepartmentByParentID(department.getDepartmentID());
 		if (departmentList != null && departmentList.size()>0) {
-			Iterator<Department> iterator = departmentList.iterator();
-			while (iterator.hasNext()) {
-				Department dep = iterator.next();
+			for (Department dep : departmentList) {
 				if(dep != null && dep.getChildren() != null){
 					getDepartmentList(dep);
 				}
@@ -89,9 +110,6 @@ public class ManagementUserController {
 					departments.add(dep);
 				}
 			}
-		}
-		if (department.getLevel() == 4 && !departments.contains(department)) {
-			departments.add(department);
 		}
 	}
 	
@@ -242,7 +260,104 @@ public class ManagementUserController {
 		mode.put("list", list);
 		return new ModelAndView("management/userList", mode);
 	}
+	@RequestMapping(value = "importUser", method = RequestMethod.GET)
+	public ModelAndView importUser( HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return new ModelAndView("management/importUser");
+	}
+	@RequestMapping(value = "userImport", method = RequestMethod.POST)
+	public ModelAndView userImport(@RequestParam("file")
+    MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		parseFile(file);
+        ModelMap map = new ModelMap();
+        map.put("message", "上传成功");
+        return new ModelAndView("management/importUser", map);
+	}
 	
+	private void parseFile(MultipartFile multipartFile) throws Exception {
+        String fileName = multipartFile.getOriginalFilename().toLowerCase();
+        if (fileName.endsWith("xls")) {
+            LOG.debug("==== deal the xls file ");
+            HSSFWorkbook webwork = new HSSFWorkbook(multipartFile.getInputStream());
+            dealWorkbook(webwork);
+        } else if (fileName.endsWith("xlsx")) {
+            LOG.debug("==== deal the xlsx file ");
+            Workbook webwork = new XSSFWorkbook(multipartFile.getInputStream());
+            dealWorkbook(webwork);
+        }
+    }
+
+    private void dealWorkbook(Workbook webwork) {
+        try {
+            Sheet sheet = webwork.getSheetAt(0);
+            int firstCellNum;
+            String sex = "";
+            for (int i = sheet.getFirstRowNum() + 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                firstCellNum = row.getFirstCellNum();
+                MembersUser patient = new MembersUser();
+                patient.setLoginName(row.getCell(firstCellNum).getStringCellValue());
+                patient.setUserName(row.getCell(firstCellNum+1).getStringCellValue());
+                patient.setPassword(row.getCell(firstCellNum+2).getStringCellValue());
+                sex = row.getCell(firstCellNum+3).getStringCellValue();
+                sex =  sex.equals("女") ? "Female" : "Male";
+                patient.setSex(Sex.valueOf(sex));
+                patient.setPhone(row.getCell(firstCellNum+4).getStringCellValue());
+                userService.save(patient);
+            }
+            LOG.debug("last row = " + sheet.getLastRowNum());
+        } catch (Exception e) {
+            LOG.error(e);
+        }
+    }
+    
+    @RequestMapping(value = "retrieval", method = RequestMethod.GET)
+	public ModelAndView retrieval( HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return new ModelAndView("management/retrieval");
+    }
+    @RequestMapping(value = "retrieval", method = RequestMethod.POST)
+    public ModelAndView retrieval(String level,String paymentDateLeft,String paymentDateRight,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	ModelMap mode = new ModelMap();
+    	mode.put("level", level);
+    	mode.put("paymentDateLeft", paymentDateLeft);
+    	mode.put("paymentDateRight", paymentDateRight);
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	if (!level.equals("-1")) {
+			map.put("level", level);
+		}else{
+			map.put("level", null);
+		}
+    	if ( !paymentDateLeft.equals("")) {
+    		map.put("paymentDateLeft", paymentDateLeft);
+    	}else{
+    		map.put("paymentDateLeft", null);
+    	}
+    	if ( !paymentDateRight.equals("")) {
+    		map.put("paymentDateRight", paymentDateRight);
+    	}else{
+    		map.put("paymentDateRight", null);
+    	}
+    	Personnel personnel = (Personnel)request.getSession().getAttribute("loginPersonnle");
+		if(personnel != null){
+			Department department = personnel.getDepartment();
+			departments = new ArrayList<Department>();
+			departments.clear();
+			getDepartmentList(department);
+			List<MemberRecord> personnelList = new ArrayList<MemberRecord>();
+			if (departments != null && departments.size()>0) {
+				for (Department depar : departments) {
+					if (depar != null && depar.getLevel()==4) {
+						List<MemberRecord> userList = departmentService.getAllByParam(map,depar.getDepartmentID());
+						if(userList != null){
+							personnelList.addAll(userList);
+						}
+					}
+				}
+			}
+			mode.put("list", personnelList);
+		}
+    	return new ModelAndView("management/retrieval",mode);
+    }
+    
 	// MD5加码。32位
 	public static String MD5(String inStr) {
 		MessageDigest md5 = null;

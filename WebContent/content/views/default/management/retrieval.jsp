@@ -3,6 +3,16 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:include page='../common/header.jsp' />
+<script type="text/javascript"
+	src="content/static/js/echart/ie10-viewport-bug-workaround.js"></script>
+<link href="content/static/css/datetime/jquery-clockpicker.min.css"
+	rel="stylesheet">
+<link href="content/static/css/datetime/jquery.datetimepicker.css"
+	rel="stylesheet">
+<script type="text/javascript"
+	src="content/static/js/datetime/bootstrap-clockpicker.min.js"></script>
+<script type="text/javascript"
+	src="content/static/js/datetime/jquery.datetimepicker.js"></script>
 <script type="text/javascript">
 	// Popup window code
 	function popupWindow(url) {
@@ -15,6 +25,15 @@
 	function importUser(){
 		window.location.href = 'management/importUser';
 	}
+	function dateInfoxxx(obj) {
+		var date = obj;
+		$('#' + date).datetimepicker({
+			lang : 'ch',
+			timepicker : false,
+			format : 'Y-m-d',
+			formatDate : 'Y-m-d',
+		});
+	}
 </script>
 <div class="row clearfix">
 	<jsp:include page='../common/menu.jsp' />
@@ -23,16 +42,26 @@
 	value='<%=(Personnel) request.getSession().getAttribute(
 						"loginPersonnle")%>'></c:set>
 	<form class="form-horizontal"
-					action="management/searchUser" method="POST">
+					action="management/retrieval" method="POST">
 					<div class="form-group">
 						<div class="col-sm-2">
-							<input type="text" name="seachName"  class="form-control" placeholder="身份证">
+							<select name="level"  class="form-control" >
+								<option value="-1">-----会员等级-----
+								<option value="senior" <c:if test="${level == 'senior' }">checked</c:if>>高级
+								<option value="common" <c:if test="${level == 'common' }">checked</c:if>>普通
+							</select>
+						</div>
+						<div class="col-sm-2">
+							<input type="text" name="paymentDateLeft" id="paymentDateLeft" onclick="dateInfoxxx('paymentDateLeft')" class="form-control" placeholder="起始日期">
+						</div>
+						<div class="col-sm-2">
+							<input type="text" name="paymentDateRight" id="paymentDateRight" onclick="dateInfoxxx('paymentDateRight')" class="form-control" placeholder="截至日期">
 						</div>
 						<div class="col-sm-2">
 							<button type="submit" class="btn btn-default ">查询</button>
 						</div>
 						<div class="col-sm-2">
-							<button type="button" onclick="importUser();" class="btn btn-default ">导入</button>
+							<button type="button" onclick="expartUser();" class="btn ">导出</button>
 						</div>
 					</div>
 				</form>
@@ -41,11 +70,6 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">
 					账户列表
-					<c:if test="${person.department.departmentID == 1 || person.department.level == 4 }">
-					<a href="management/regist"><span class="badge navbar-right">
-					添加&nbsp;+
-					</span></a>
-					</c:if>
 				</h3>
 			</div>
 			<div class="list-group-item">
@@ -54,10 +78,17 @@
 					<tr class="">
 						<th>身份证</th>
 						<th>用户名</th>
+						<th>会员等级</th>
 						<th>性别</th>
 						<th>电话</th>
-						<th>充值记录</th>
-						<th></th> 
+						<th>起始日期</th>
+						<th>结束日期</th>
+						<th>创建机构</th>
+						<th>续费机构</th>
+						<th>服务中心</th>
+						<th>省级机构</th>
+						<th>机构总部</th>
+						<th>操作</th>
 					</tr>
 					<c:forEach var="cdc" items="${list }" varStatus="loop">
 						<c:choose>
@@ -70,6 +101,9 @@
 						</c:choose>
 						<td>${cdc.loginName }</td>
 						<td>${cdc.userName }</td>
+						<td><c:if test="${cdc.level == 'common' }"></c:if>
+						<c:if test="${cdc.level == 'senior' }">G</c:if>
+						</td>
 						<td>
 							<c:if test="${cdc.sex == 'Female' }">女</c:if>
 							<c:if test="${cdc.sex == 'Male' }">男</c:if>
@@ -84,14 +118,15 @@
 							权限不够
 						</c:if>
 						</td> 
+						<td>${cdc.cateDate }</td>
+						<td>${cdc.endDate }</td>
+						<td>${cdc.cateDepartment.departmentName }</td>
+						<td>${cdc.renewDepartment.departmentName }</td>
+						<td>${cdc.cateDepartment.parentLevel.departmentName }</td>
+						<td>${cdc.cateDepartment.parentLevel.parentLevel.departmentName }</td>
+						<td>${cdc.cateDepartment.parentLevel.parentLevel.parentLevel.departmentName }</td>
 						<td>
-							<a onclick="popupWindow('management/rechargeForUser?id=${cdc.membersUserID }');" href="javascript:void(0);"><span class="badge">交易记录</span></a>
-						</td>
-						<td>
-						<c:if test="${person.department.departmentID == 1 || person.department.level == 4 }">
-							<a onclick="" href="management/updateUser?id=${cdc.membersUserID }"><span class="badge">修改</span></a>
-							<a onclick="" href="management/deleteUser?id=${cdc.membersUserID }"><span class="badge">删除</span></a>
-						</c:if>
+						<button><c:if test="${!cdc.isSettle }">未结算</c:if><c:if test="${cdc.isSettle }">已结算</c:if></button>
 						</td>
 						</tr>
 					</c:forEach>
