@@ -14,7 +14,7 @@ import com.yc.entity.user.Department;
 import com.yc.entity.user.MembersUser;
 
 @Entity
-@DiscriminatorValue("rechargeRecord")
+@DiscriminatorValue("rechargeRecord") 
 public class RechargeRecord {
 
 	@Id

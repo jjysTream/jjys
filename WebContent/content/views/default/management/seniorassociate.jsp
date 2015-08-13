@@ -35,11 +35,18 @@
 			formatDate : 'Y-m-d',
 		});
 	}
-	function isSettle(id) {
-		window.location.href = 'management/isSettle?recordID=' + id + '&level='
+	function seniorassociate() {
+		window.location.href = 'management/seniorassociate?level='
 				+ $('#level').val() + '&paymentDateLeft='
 				+ $('#paymentDateLeft').val() + '&paymentDateRight='
 				+ $('#paymentDateRight').val();
+	}
+	function exports(){
+		var href = 'management/exports?level='
+			+ $('#level').val() + '&paymentDateLeft='
+			+ $('#paymentDateLeft').val() + '&paymentDateRight='
+			+ $('#paymentDateRight').val();
+		popupWindow(href);
 	}
 </script>
 <div class="row clearfix">
@@ -71,7 +78,10 @@
 						placeholder="截至日期">
 				</div>
 				<div class="col-sm-2">
-					<button type="submit" class="btn btn-default ">查询</button>
+					<button type="button" onclick="seniorassociate();" class="btn btn-default ">查询</button>
+				</div>
+				<div class="col-sm-2">
+					<button type="button" onclick="exports();" class="btn btn-default ">导出</button>
 				</div>
 			</div>
 		</form>
@@ -89,15 +99,7 @@
 							<th>等级</th>
 							<th>性别</th>
 							<th>电话</th>
-							<th>起始日期</th>
-							<th>结束日期</th>
-							<th>周期</th>
 							<th>创建机构</th>
-							<th>续费机构</th>
-							<th>服务中心</th>
-							<th>省级机构</th>
-							<th>机构总部</th>
-							<th>操作<c:set var="count" value="${fn:length(list) }"></c:set></th>
 						</tr>
 						<c:forEach var="cdc" items="${list }" varStatus="loop">
 							<c:choose>
@@ -121,33 +123,7 @@
 								</c:if> <c:if test="${!isok}">
 							权限不够
 						</c:if></td>
-							<td>${cdc.cateDate }<input id="receiveDate${loop.index }"
-								type="hidden" value="${cdc.cateDate }">
-							</td>
-							<td>${cdc.endDate }<input id="sendDate${loop.index }"
-								type="hidden" value="${cdc.endDate }">
-							</td>
-							<td id="reduce${loop.index }"></td>
 							<td>${cdc.cateDepartment.departmentName }
-								<div id="cateDepart${loop.index }"></div>
-							</td>
-							<td>${cdc.renewDepartment.departmentName }
-								<div id="renewDepart${loop.index }"></div>
-							</td>
-							<td>${cdc.cateDepartment.parentLevel.departmentName }
-								<div id="fuwuDepart${loop.index }"></div>
-							</td>
-							<td>${cdc.cateDepartment.parentLevel.parentLevel.departmentName }
-								<div id="shengjiDepart${loop.index }"></div>
-							</td>
-							<td>${cdc.cateDepartment.parentLevel.parentLevel.parentLevel.departmentName }
-								<div id="zongDepart${loop.index }"></div>
-							</td>
-							<td>
-								<button onclick="isSettle('${cdc.recordID}');" class="btn ">
-									<c:if test="${!cdc.isSettle }">未结算</c:if>
-									<c:if test="${cdc.isSettle }">已结算</c:if>
-								</button>
 							</td>
 							</tr>
 						</c:forEach>

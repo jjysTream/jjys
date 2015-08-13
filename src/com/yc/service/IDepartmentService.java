@@ -37,4 +37,12 @@ public interface IDepartmentService extends IGenericService<Department> {
 	 */
 	List<MemberRecord> getAllByParam(Map<String, Object> map, Integer departmentID) throws ParseException;
 
+	/**
+	 * 通过map查找链表
+	 * @param map level 等级 ，paymentDateLeft 起始日期，paymentDateRight 结束
+	 * @param departmentID 部门ID
+	 * @return
+	 */
+	List<MemberRecord> getAllByDepart(Map<String, Object> map, Integer departmentID) throws ParseException;
+
 }

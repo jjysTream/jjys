@@ -120,6 +120,66 @@ public class DepartmentService extends GenericService<Department> implements IDe
 		System.out.println("pr============="+pr.size());
 		return pr;
 	}
+	
+	@Override
+	public List<MemberRecord> getAllByDepart(Map<String, Object> map,Integer deparmentID) throws ParseException {
+		StringBuffer hql = new StringBuffer("SELECT DISTINCT loginName,username,sex,mu.level,phone,creatDepartment_id "
+				+ " FROM rechargerecord rg LEFT JOIN membersuser mu ON mu.membersUserID = rg.membersUser_id "
+				+ " WHERE rg.creatDepartment_id = "+deparmentID );
+		if(map.get("level") != null){
+			hql.append(" and mu.level = '"+map.get("level")+"'");
+		}
+		if(map.get("paymentDateLeft") != null && !map.get("paymentDateLeft").equals("") && map.get("paymentDateRight") != null && !map.get("paymentDateRight").equals("")){
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			cal.setTime(sdf.parse(map.get("paymentDateRight").toString()));
+			Date d1 = cal.getTime();
+			Date dd = sdf.parse(map.get("paymentDateLeft").toString());
+			cal.setTime(new Date(dd.getTime()));
+			Date d2 = cal.getTime();
+			long daterange = d1.getTime() - d2.getTime();
+			if (daterange > 0) {
+				long time = 1000 * 3600 * 24;
+				System.out.println("daterange / time======"+daterange / time);
+				List<String> dates = CalendarDays(d2,Integer.parseInt(String.valueOf(daterange / time)));
+				StringBuilder takeDates = new StringBuilder();
+				for (String date : dates) {
+					if (takeDates.length() > 0) {
+						takeDates.append(",");
+					}
+					takeDates.append("'");
+					takeDates.append(date);
+					takeDates.append("'");
+				}
+				hql.append(" and rg.createDate IN (" + takeDates.toString() + ")");
+			}
+		}
+		Query query = departmentDao.getEntityManager().createNativeQuery(hql.toString());
+		@SuppressWarnings("rawtypes")
+		List objecArraytList = query.getResultList();
+		List<MemberRecord> pr = new ArrayList<MemberRecord>();
+		MemberRecord mode = null;
+		if (objecArraytList != null && objecArraytList.size() > 0) {
+			for (int i = 0; i < objecArraytList.size(); i++) {
+				mode = new MemberRecord();
+				Object[] obj = (Object[]) objecArraytList.get(i);
+				if (obj[i] != null) {
+					mode.setLoginName(obj[0].toString());
+					mode.setUserName(obj[1].toString());
+					mode.setSex(Sex.valueOf(obj[2].toString()));
+					mode.setLevel(MemberLevel.valueOf(obj[3].toString()));
+					mode.setPhone(obj[4].toString());
+					if(obj[5] != null){
+						Department catedepart = departmentDao.findById(Integer.parseInt(obj[5].toString()));
+						mode.setCateDepartment(catedepart);
+					}
+					pr.add(mode);
+				}
+			}
+		}
+		return pr;
+	}
+	
 	private List<String> CalendarDays(Date d1,int day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(d1);

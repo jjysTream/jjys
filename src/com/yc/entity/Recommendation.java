@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.yc.entity.user.ConstitutionType;
-
+//食材，食谱，运动
 @Entity
 @DiscriminatorValue("recommendation")
 public class Recommendation {
