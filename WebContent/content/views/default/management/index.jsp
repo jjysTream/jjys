@@ -3,5 +3,4 @@
 <jsp:include page='../common/header.jsp' />
 <div class="row clearfix">
 	<jsp:include page='../common/menu.jsp' />
-		
-<jsp:include page='../common/footer.jsp' />
+</div>

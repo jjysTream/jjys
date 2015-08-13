@@ -430,19 +430,9 @@ public class ManagementUserController {
 	}
 
 	@RequestMapping(value = "exports", method = RequestMethod.GET)
-	public ModelAndView exports(String level, String paymentDateLeft, String paymentDateRight, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelMap mode = new ModelMap();
-		mode.put("level", level);
-		mode.put("paymentDateLeft", paymentDateLeft);
-		mode.put("paymentDateRight", paymentDateRight);
-		return new ModelAndView("management/exports", mode);
-	}
-
-	@RequestMapping(value = "export", method = RequestMethod.POST)
-	public ModelAndView export(@RequestParam("file") MultipartFile file, String level, String paymentDateLeft, String paymentDateRight, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String fileName = file.getOriginalFilename();
-		if (fileName.endsWith("xls") || fileName.endsWith("xlsx")) {
-			Map<String, Object> map = new HashMap<String, Object>();
+	public ModelAndView export( String level, String paymentDateLeft, String paymentDateRight, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelMap mode = null;	
+		Map<String, Object> map = new HashMap<String, Object>();
 			if (!level.equals("-1")) {
 				map.put("level", level);
 			} else {
@@ -475,15 +465,13 @@ public class ManagementUserController {
 						}
 					}
 				}
-				
-				export(personnelList,file);
+				mode = export(personnelList, request);
 			}
-		}
-		return null;
+		return new ModelAndView("management/exports",mode);
 	}
 
-	private void export(List<MemberRecord> personnelList,MultipartFile file) throws IOException {
-		HSSFWorkbook wb = new HSSFWorkbook(file.getInputStream()); 
+	private ModelMap export(List<MemberRecord> personnelList,HttpServletRequest request) throws IOException {
+		HSSFWorkbook wb = new HSSFWorkbook(); 
 		HSSFSheet sheet = wb.createSheet("会员用户");
 		HSSFRow row = sheet.createRow((int) 0);
 		HSSFCellStyle style = wb.createCellStyle(); 
@@ -516,7 +504,20 @@ public class ManagementUserController {
         	row.createCell((short) 4).setCellValue(record.getPhone()); 
         	row.createCell((short) 5).setCellValue(record.getCateDepartment().getDepartmentName()); 
 		}
-        
+        String root = request.getSession().getServletContext().getRealPath("../");
+		File uploadDir = new File(root, "files/").getCanonicalFile();
+    	if (!uploadDir.exists() || uploadDir.isFile()) {
+    		uploadDir.mkdir();
+		}
+    	String name = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+    	File file = new File(uploadDir,name+".xls");
+    	FileOutputStream fout = new FileOutputStream(file);
+        wb.write(fout);  
+        fout.close();
+        ModelMap mode = new ModelMap();
+        mode.put("path", "../files/"+name+".xls");
+        mode.put("name", name+".xls");
+        return mode;
 	}
 
 	// MD5加码。32位
